@@ -1,0 +1,313 @@
+@font-face {
+    font-family: 'Varela Round';
+    font-weight: 400;
+    src: url('./fonts/VarelaRound-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'FluentSystemIcons-Filled';
+    src: url('./fonts/FluentSystemIcons-Filled.ttf');
+}
+
+@font-face {
+    font-family: 'FluentSystemIcons-Regular';
+    src: url('./fonts/FluentSystemIcons-Regular.ttf');
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    cursor: default;
+    font-family: 'Varela Round';
+}
+
+#root {
+    background: white;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.guildsList {
+    width: 80px;
+    height: 100%;
+    overflow-y: auto;
+    display: inline-block
+}
+
+.guildsListButtons {
+    background: linear-gradient(106.71deg, #00FF47 28.82%, #17C452 94.81%);
+    color: white;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    border: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.guildsListButtons:disabled:before {
+    content: '';
+    position: absolute;
+    background: black;
+    width: 5px;
+    height: 40px;
+    left: 0px;
+    margin-top: -8px;
+    border-top-right-radius: 100%;
+    border-bottom-right-radius: 100%;
+}
+
+.guildsListSpecialButton {
+    background: linear-gradient(106.71deg, #0094FF 28.82%, #1766C4 94.81%);
+}
+
+.guildsListFirstButton { 
+    margin-top: 20px;
+}
+
+.guildsListBottom {
+    margin-bottom: 25px;
+}
+
+.fluentIcon {
+    font-family: 'FluentSystemIcons-Filled';
+}
+
+.fluentIconBorder {
+    font-family: 'FluentSystemIcons-Regular';
+}
+
+.guildIcon {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+
+.actualContent {
+    display: inline-block;
+    position: absolute;
+    width: calc(100% - 80px);
+    height: 100%;
+}
+
+.sidebar {
+    width: 200px;
+    height: calc(100% - 35px);
+    background: whitesmoke;
+    overflow-y: auto;
+}
+
+.unbuttoned {
+    border: none;
+    background: none;
+    font-size: 20px;
+}
+
+.guildInfo {
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.guildInfoArrow {
+    position: absolute;
+    right: 10px;
+}
+
+.guildMenuButton {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    border: none;
+    background: white;
+}
+
+.guildMenu {
+    position: absolute;
+    width: 200px;
+}
+
+.guildMenuButton:hover {
+    background: #f5f5f5;
+}
+
+.channel {
+    background: whitesmoke;
+    border: none;
+    width: calc(100% - 10px);
+    height: 25px;
+    text-align: left;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.channel:disabled {
+    background: gainsboro;
+    color: black;
+}
+
+.messagesScroll {
+    position: absolute;
+    overflow-y: auto;
+    top: 45px;
+    left: 200px;
+    width: calc(100% - 200px);
+    height: calc(100% - 115px);
+}
+
+.messages {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%;
+}
+
+.messageBoxContainer {
+    position: absolute;
+    bottom: 0;
+    left: 200px;
+    margin: 10px;
+    width: 100%;
+}
+
+.messageBox {
+    padding: 10px;
+    border: none;
+    width: calc(100% - 345px);
+    resize: none;
+    height: 35px;
+    vertical-align: middle;
+    outline: none;
+    background: whitesmoke;
+}
+
+.boxIconContainer {
+    display: inline-flex;
+    vertical-align: middle;
+    background: whitesmoke;
+    height: 55px;
+}
+
+.boxIcon {
+    vertical-align: middle;
+    font-size: 20px;
+    border: none;
+    background: none;
+    margin-right: 10px;
+}
+
+.sendButton {
+    margin-left: 10px;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: linear-gradient(106.71deg, #00FF47 28.82%, #17C452 94.81%);
+    color: white;
+    border-radius: 100%;
+    vertical-align: middle;
+}
+
+.messageContainer {
+    padding: 5px;
+    position: relative;
+}
+
+.messageContainer:hover {
+    background: whitesmoke;
+}
+
+.messagePfp {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.messagePostPfp {
+    margin-left: 50px;
+}
+
+.messageUsername {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.message {
+    font-weight: normal;
+    display: inline-block;
+    word-wrap: break-word;
+    max-width: calc(100% - 50px);
+}
+
+.messageSaveButton {
+    display: none;
+}
+
+.userInfo {
+    position: absolute;
+    background: black;
+    color: white;
+    width: 200px;
+    height: 35px;   
+    left: 80px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.userInfoPfp {
+    width: 15px;
+    height: 15px;
+    margin-left: 10px;
+    border-radius: 100%;
+}
+
+.userInfoUsername {
+    display: block;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-left: 5px;
+}
+
+.userInfoSettings {
+    color: white;
+    margin-right: 10px;
+}
+
+.channelInfo {
+    position: absolute;
+    background: whitesmoke;
+    width: calc(100% - 200px);
+    height: 44px;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.channelInfoName {
+    margin-left: 5px;
+}
+
+.channelInfoButtons {
+    position: absolute;
+    right: 0;
+    height: 20px;
+}
+
+.channelInfoButton {
+    margin-right: 25px;
+}

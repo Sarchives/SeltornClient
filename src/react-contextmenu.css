@@ -1,0 +1,27 @@
+.react-contextmenu {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    font-size: 16px;
+    min-width: 160px;
+    padding: 5px 0;
+    pointer-events: none;
+    text-align: left;
+}
+
+.react-contextmenu.react-contextmenu--visible {
+    z-index: 9999;
+}
+
+.react-contextmenu-item {
+    color: black;
+    padding: 3px 20px;
+    text-align: left;
+}
+
+.react-contextmenu-item.react-contextmenu-item--active,
+.react-contextmenu-item.react-contextmenu-item--selected {
+    color: white;
+    background: linear-gradient(106.71deg, #0094FF 28.82%, #1766C4 94.81%);
+}
