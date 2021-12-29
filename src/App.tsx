@@ -14,8 +14,8 @@ const domain = process.env.REACT_APP_DOMAIN ?? '';
 function App() {
 
   const [ws, setWs] = useState<WebSocket>();
-  const [websocketLost, setWebsocketLost] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [modalOpened, setModalOpened] = useState(false);
   const [user, setUser] = useState('');
   const [guilds, setGuilds] = useState([]);
   const [friendsButtonDisabled, setFriendsButtonDisabled] = useState(true);
@@ -59,39 +59,38 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if(websocketLost) {
-    window.location.reload();  
-    }
-  }, [websocketLost]);
-
   function connectWebsocket(token: string) {
     const ws = new WebSocket((domain.startsWith("https") ? 'wss://' : 'ws://') + domain.split('//')[1] + '/socket?token=' + token);
     
     ws.onopen = () => {
       console.info('[WebSocket] Connected');
+      setLoaded(true);
     };
 
     ws.onclose = () => {
       console.warn('[WebSocket] Disconnected');
-      setWebsocketLost(true);
+      window.location.reload();  
     }
 
-    setLoaded(true);
+    ws.onerror = () => {
+      console.error('[WebSocket] Error');
+      window.location.reload(); 
+    }
     return ws;
   }
 
-  if(loaded) {
+  if(loaded && user) {
   return (
     <>
+    {modalOpened ? <div className="opacitier"></div> : null}
     <UserInfo domain={domain}></UserInfo>
     <GuildsList domain={domain} guilds={guilds} guild={guild} setGuild={setGuild} setChannel={setChannel} friendsButtonDisabled={friendsButtonDisabled} setFriendsButtonDisabled={setFriendsButtonDisabled}></GuildsList>
     <div className="actualContent">
     {guild ? (
       <>
       <div className="sidebar">
-      <GuildInfo domain={domain} guild={guild} user={user}></GuildInfo>
-    <ChannelsList domain={domain} user={user} guild={guild} channel={channel} setChannel={setChannel}></ChannelsList>
+      <GuildInfo domain={domain} guild={guild} user={user} setModalOpened={setModalOpened}></GuildInfo>
+    <ChannelsList domain={domain} user={user} guild={guild} channel={channel} setChannel={setChannel} ws={ws}></ChannelsList>
     </div>
     {channel ? <>
     <Messages domain={domain} user={user} guild={guild} channel={channel} ws={ws}></Messages>

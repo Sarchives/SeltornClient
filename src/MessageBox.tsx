@@ -1,8 +1,10 @@
 import { createRef, useEffect, useState } from "react";
+import Picker from 'emoji-picker-react';
 
 function MessageBox(props: any) {
     const [channelName, setChannelName] = useState('');
     const [message, setMessage] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const box = createRef<HTMLTextAreaElement>();
     const boxIconContainer = createRef<HTMLDivElement>();
 
@@ -32,11 +34,20 @@ function MessageBox(props: any) {
     setMessage(event.target.value);
    }}></textarea>
    <div className="boxIconContainer" ref={boxIconContainer}>
-    <button className="boxIcon fluentIconBorder">&#xf3e0;</button>
+    <button className="boxIcon fluentIconBorder" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>&#xf3e0;</button>
     <button className="boxIcon fluentIcon">&#xf10b;</button>
    </div>
-   <button className="sendButton fluentIcon" onClick={() => {
-       if(message) {
+   {showEmojiPicker ? <div className="emojiPicker" onKeyDown={(event) => {
+         if(event.key === 'Escape') {
+            setShowEmojiPicker(false);
+         }
+      }}><Picker native onEmojiClick={(event, emoji) => {
+     if(box.current) {
+     setMessage(box.current?.value.substring(0, box.current?.selectionStart) + emoji.emoji + box.current?.value.substring(box.current?.selectionStart, box.current?.value.length));
+     }
+    }} /></div> : null}
+   <button className="sendButton fluentIcon" disabled={!message} onClick={() => {
+     setMessage('');
     fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel + '/messages', {
         method: 'POST',
         body: JSON.stringify({ message: message }),
@@ -44,12 +55,7 @@ function MessageBox(props: any) {
             'Content-Type': 'application/json',
             'Authorization': localStorage.getItem('token') ?? ''
         })
-      }).then(res => {
-          if(res.status === 200) {
-            setMessage('');
-          }
-      })
-    }
+      });
    }}>&#xf6a4;</button>
    </div>);
 }

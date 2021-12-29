@@ -1,8 +1,9 @@
 import { createRef, useEffect, useState } from "react";
-import { Guild, Channel } from './interfaces';
+import { Guild, Channel, Role } from './interfaces';
 
 function ChannelsList(props: any) {
 
+  const [guild, setGuild] = useState<Guild>();
   const [channels, setChannels] = useState<Channel[]>([]);
 
     useEffect(() => {
@@ -13,6 +14,7 @@ function ChannelsList(props: any) {
       })
       .then(res => res.json())
       .then((result: Guild) => {
+        setGuild(result);
         result.channels.forEach((x: Channel, i: number) => {
         setChannels(preChannels => {
             let channels = [...preChannels];
@@ -31,13 +33,32 @@ function ChannelsList(props: any) {
       )
     }, []);
 
-   return (<>{channels.map(channel => <button ref={channel.ref} className="channel" onClick={() => {
+    useEffect(() => {
+      props.ws.addEventListener('message', (event: any) => {
+        const data = JSON.parse(event.data);
+          switch (data.event) {
+            case 'channelCreated':
+              setChannels(channels => {
+                let newChannels = [...channels];
+                let newChannel = data.channel;
+                if(newChannel.roles.filter((x: any) => guild?.members.find(x => x?.id === props.user)?.roles.includes(x.id)).map((x: any) => (x.permissions & 0x0000000040) === 0x0000000040).includes(true)) {
+                newChannel.ref = createRef();
+                newChannels.push(newChannel);
+                }
+                return newChannels;
+              });
+              break;
+          }
+      });
+    }, [props.ws, guild]);
+
+   return (<>{channels.map(channel => <button key={channel.id} ref={channel.ref} className="channel" onClick={() => {
     if(props.channel) {
       channels[channels.findIndex(x => x.id === props.channel)].ref.current.disabled = false;
       }
       props.setChannel(channel.id);
       channels[channels.findIndex(x => x.id === channel.id)].ref.current.disabled = true;
-   }}># {channel.name}</button>)}</>);
+   }}><h3># {channel.name}</h3></button>)}</>);
 }
 
 export default ChannelsList;

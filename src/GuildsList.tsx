@@ -51,7 +51,7 @@ function GuildsList(props: any) {
       props.setChannel('');
       props.setGuild('');
     }}>&#xf5b4;</button>
-    {Object.values(guilds).map(guildO => <button ref={guildO.ref} className="guildsListButtons" onClick={() => {
+    {Object.values(guilds).map(guildO => <button key={guildO.id} ref={guildO.ref} className="guildsListButtons" onClick={() => {
       if(props.guild) {
       guilds[guilds.findIndex(x => x.id === props.guild)].ref.current.disabled = false;
       }
