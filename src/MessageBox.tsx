@@ -30,7 +30,7 @@ function MessageBox(props: any) {
     }, [message]);
 
    return (<div className="messageBoxContainer">
-       <textarea ref={box} placeholder={'Write message to ' + channelName} value={message} className="messageBox" rows={1} maxLength={4000} onChange={event => {
+       <textarea ref={box} placeholder={'Message #' + channelName} value={message} className="messageBox" rows={1} maxLength={4000} onChange={event => {
     setMessage(event.target.value);
    }}></textarea>
    <div className="boxIconContainer" ref={boxIconContainer}>

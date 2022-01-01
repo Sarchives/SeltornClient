@@ -1,5 +1,3 @@
-import { RefObject } from "react";
-
 export interface Info {
     id: string;
 }
@@ -12,6 +10,8 @@ export interface User {
     username: string;
     discriminator: string;
     creation: number;
+    verified: boolean;
+    verificator: string;
 };
 
 export interface Friend {
@@ -68,6 +68,14 @@ export interface Channel {
     ref: any;
 };
 
+export interface Invite {
+    code: string;
+    author: string | Author;
+    expiration: number;
+    maxUses: number;
+    uses: number;
+}
+
 export interface Guild {
     id: string;
     name: string,
@@ -77,5 +85,6 @@ export interface Guild {
     roles: Role[],
     members: Member[],
     bans: string[];
+    invites: Invite[];
     ref: any;
 };

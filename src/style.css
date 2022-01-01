@@ -18,7 +18,7 @@
 }
 
 #root {
-    background: #fff8e1;
+    background: var(--50);
     position: fixed;
     width: 100%;
     height: 100%;
@@ -28,7 +28,8 @@
     width: 80px;
     height: 100%;
     overflow-y: auto;
-    display: inline-block
+    display: inline-block;
+    border-right: 1px solid #0000001a;
 }
 
 .guildsListButtons {
@@ -44,9 +45,14 @@
     margin-right: auto;
     margin-bottom: 10px;
     position: relative;
+    border: 1px solid #0000001a;
 }
 
 .guildsListButtons:hover {
+    border-radius: 30%;
+}
+
+.guildsListButtons:disabled {
     border-radius: 30%;
 }
 
@@ -54,7 +60,7 @@
     position: absolute;
     content: '';
     background: black;
-    width: 10px;
+    width: 5px;
     height: 40px;
     margin-left: -40px;
     margin-top: -8px;
@@ -62,11 +68,11 @@
     border-bottom-right-radius: 100%;
 }
 
-.guildsListButtons:hover:before {
+.guildsListButtons:not(:disabled):hover:before {
     position: absolute;
     content: '';
     background: black;
-    width: 10px;
+    width: 5px;
     height: 20px;
     margin-left: -40px;
     margin-top: 2px;
@@ -76,7 +82,7 @@
 
 .guildsListSpecialButton {
     color: white;
-    background: #1976d2;
+    background: var(--300);
 }
 
 .guildsListFirstButton { 
@@ -109,11 +115,10 @@
 }
 
 .sidebar {
-    width: 198px;
+    width: 199px;
     height: calc(100% - 35px);
-    background: #fffde7;
+    background: var(--100);
     overflow-y: auto;
-    border-left: 1px solid #0000001a;
     border-right: 1px solid #0000001a;
 }
 
@@ -144,7 +149,7 @@
 
 .guildMenu {
     position: absolute;
-    width: 188px;
+    width: 189px;
     left: 50%;
     transform: translateX(-50%);
     margin-top: 5px;
@@ -157,7 +162,7 @@
     width: 100%;
     padding: 10px;
     border: none;
-    background: #fff8e1;
+    background: var(--50);
 }
 
 .guildMenuButton:first-child {
@@ -179,11 +184,11 @@
 }
 
 .guildMenuButton:hover {
-    background: #fffde7;
+    background: var(--100);
 }
 
 .channel {
-    background: #fffde7;
+    background: var(--100);
     border: none;
     width: calc(100% - 10px);
     text-align: left;
@@ -193,7 +198,7 @@
 }
 
 .channel:disabled {
-    background: #ffe0b2;
+    background: var(--100);
     color: black;
 }
 
@@ -230,6 +235,9 @@
     vertical-align: middle;
     border: 1px solid #0000001a;
     border-right: none;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .boxIconContainer {
@@ -239,6 +247,9 @@
     height: 55px;
     border: 1px solid #0000001a;
     border-left: none;
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 .boxIconContainerEdit {
@@ -254,7 +265,7 @@
 }
 
 .boxIcon:hover {
-    background: #fff8e1;
+    background: var(--50);
 }
 
 .sendButton {
@@ -262,18 +273,18 @@
     width: 35px;
     height: 35px;
     border: none;
-    background: #00e676;
+    background: var(--300);
     color: white;
     border-radius: 100%;
     vertical-align: middle;
 }
 
 .sendButton:hover {
-    background: #00c853;
+    background: var(--200);
 }
 
 .sendButton:disabled {
-    background: #00c853;
+    background: var(--200);
 }
 
 .messageContainer {
@@ -282,11 +293,11 @@
 }
 
 .messageContainerEdit {
-    background: #fffde7;
+    background: var(--100);
 }
 
 .messageContainer:hover {
-    background: #fffde7;
+    background: var(--100);
 }
 
 .messagePfp {
@@ -336,11 +347,11 @@
 
 .userInfo {
     position: absolute;
-    background: #ffe0b2;
+    background: var(--200);
     border-left: 1px solid #0000001a;
     border-right: 1px solid #0000001a;
     border-top: 1px solid #0000001a;
-    width: 198px;
+    width: 199px;
     height: 35px;   
     left: 80px;
     bottom: 0;
@@ -369,12 +380,12 @@
 }
 
 .userInfoSettings:hover {
-    color: #1976d2;
+    color: var(--300);
 }
 
 .channelInfo {
     position: absolute;
-    background: #fffde7;
+    background: var(--100);
     width: calc(100% - 200px);
     height: 44px;
     right: 0;
@@ -382,7 +393,6 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid #0000001a;
-    border-left: 1px solid #0000001a;
 }
 
 .channelInfoName {
@@ -400,7 +410,7 @@
 }
 
 .channelInfoButton:hover {
-    color: #1976d2;
+    color: var(--300);
 }
 
 .emojiPicker {
@@ -420,7 +430,7 @@
     position: absolute;
      right: 60px;
      top: 37px;
-     background: #fffde7;
+     background: var(--100);
      width: 500px;
      height: calc(100vh - 135px);
      z-index: 1;
@@ -458,8 +468,9 @@
     top: 50%;
     transform: translate(-50%, -50%);
     padding: 25px 50px;
-    background: #FFFDE7;
+    background: var(--100);
     border: 1px solid #0000001a;
+    border-radius: 10px;
     z-index: 3;
     display: flex;
     justify-content: center;
@@ -468,25 +479,23 @@
 
 .simpleDialogInput {
     padding: 10px;
-    border: none;
-    height: 10px;
     border: 2px solid black;
     margin-bottom: 5px;
 }
 
 .simpleDialogButton {
     border: none;
-    background: #00e676;
+    background: var(--300);
     color: white;
     padding: 10px 25px;
 }
 
 .simpleDialogButton:hover {
-    background: #00c853;
+    background: var(--200);
 }
 
 .simpleDialogButton:disabled {
-    background: #00c853;
+    background: var(--200);
 }  
 
 .simpleDialogClose {
@@ -498,6 +507,20 @@
 
 .simpleDialogClose:hover {
     color: #ff1744;
+}
+
+.simpleDialogLine {
+    width: 100%;
+    height: 1px;
+    background: black;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.simpleDialogSelect {
+    padding: 10px;
+    border: 2px solid black;
+    margin-bottom: 10px;
 }
 
 .opacitier {
@@ -524,7 +547,7 @@
     width: calc(100% - 20px);
     padding: 10px;
     border: none;
-    background: #fffde7;
+    background: var(--100);
 }
 
 .react-contextmenu-item:first-child {
@@ -546,5 +569,5 @@
 }
 
 .react-contextmenu-item:hover {
-    background: #fff8e1;
+    background: var(--50);
 }

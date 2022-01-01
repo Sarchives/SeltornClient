@@ -1,4 +1,5 @@
 import { createRef, useEffect, useState } from "react";
+import CreateInvite from "./CreateInvite";
 import CreateChannel from "./CreateChannel";
 import EditNickname from "./EditNickname";
 import { Guild } from './interfaces';
@@ -6,6 +7,7 @@ import { Guild } from './interfaces';
 function GuildInfo(props: any) {
 
    const infoRef = createRef<HTMLDivElement>();
+   const createInviteRef = createRef<HTMLDivElement>();
    const createChannelRef = createRef<HTMLDivElement>();
    const editNicknameRef = createRef<HTMLDivElement>();
 
@@ -17,6 +19,7 @@ function GuildInfo(props: any) {
    const [canManage, setCanManage] = useState(false);
    const [showInfo, setShowInfo] = useState(false);
    const [notOnWait, setNotOnWait] = useState(true);
+   const [createInvite, setCreateInvite] = useState(false);
    const [createChannel, setCreateChannel] = useState(false);
    const [editNickname, setEditNickname] = useState(false);
 
@@ -39,14 +42,16 @@ function GuildInfo(props: any) {
     }, []);
 
     useEffect(() => {
-      props.setModalOpened(createChannel || editNickname);
-    }, [createChannel, editNickname]);
+      props.setModalOpened(createInvite || createChannel || editNickname);
+    }, [createInvite, createChannel, editNickname]);
 
     useOutsideAlerter(infoRef);
 
     useOutsideAlerter2(createChannelRef);
 
     useOutsideAlerter3(editNicknameRef);
+
+    useOutsideAlerter4(createInviteRef);
 
     function useOutsideAlerter(ref: React.RefObject<HTMLDivElement>) {
       useEffect(() => {
@@ -94,7 +99,23 @@ function useOutsideAlerter3(ref: React.RefObject<HTMLDivElement>) {
    }, [ref]);
 }
 
+function useOutsideAlerter4(ref: React.RefObject<HTMLDivElement>) {
+   useEffect(() => {
+       function handleClickOutside(event: Event) {
+           if (ref.current && !ref.current.contains(event.target as Node)) {
+              setCreateInvite(false);
+           }
+       }
+
+       document.addEventListener("mousedown", handleClickOutside);
+       return () => {
+           document.removeEventListener("mousedown", handleClickOutside);
+       };
+   }, [ref]);
+}
+
    return (<>
+   {createInvite ? <div ref={createInviteRef}><CreateInvite domain={props.domain} guild={props.guild} setCreateInvite={setCreateInvite}></CreateInvite></div> : null}
    {createChannel ? <div ref={createChannelRef}><CreateChannel domain={props.domain} guild={props.guild} setCreateChannel={setCreateChannel}></CreateChannel></div> : null}
    {editNickname ? <div ref={editNicknameRef}><EditNickname domain={props.domain} guild={props.guild} setEditNickname={setEditNickname}></EditNickname></div> : null}
    <div className="guildInfoContainer">
@@ -113,7 +134,10 @@ function useOutsideAlerter3(ref: React.RefObject<HTMLDivElement>) {
          <span className="fluentIcon guildInfoArrow">&#xf262;</span>
       </button>
       {showInfo ? (<div ref={infoRef} className="guildMenu">
-      {canInvite ? <button className="guildMenuButton">
+      {canInvite ? <button className="guildMenuButton" onClick={() => {
+            setShowInfo(false);
+            setCreateInvite(true);
+         }}>
       <h3 className="fluentIconBorder guildMenuButtonIcon">&#xf5ad;</h3>
          <h3 className="guildMenuButtonText">Invite people</h3>
          </button> : null}
