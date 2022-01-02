@@ -1,9 +1,10 @@
 import { createRef, useEffect, useState } from "react";
-import { Guild, Channel, Role } from './interfaces';
+import { Guild, Channel, Member } from './interfaces';
 
 function ChannelsList(props: any) {
 
   const [guild, setGuild] = useState<Guild>();
+  const [member, setMember] = useState<Member>();
   const [channels, setChannels] = useState<Channel[]>([]);
 
     useEffect(() => {
@@ -15,12 +16,39 @@ function ChannelsList(props: any) {
       .then(res => res.json())
       .then((result: Guild) => {
         setGuild(result);
-        result.channels.forEach((x: Channel, i: number) => {
-        setChannels(preChannels => {
-            let channels = [...preChannels];
-            channels.push(result.channels[i]);
+        }
+      );
+
+      fetch(props.domain + '/guilds/' + props.guild + '/members/@me', {
+        headers: new Headers({
+          'Authorization': localStorage.getItem('token') ?? ''
+        })
+      })
+      .then(res => res.json())
+      .then((result: Member) => {
+       setMember(result);
+      }
+      );
+
+    }, [props.guild]);
+
+
+    useEffect(() => {
+      if(member) {
+      fetch(props.domain + '/guilds/' + props.guild + '/channels', {
+        headers: new Headers({
+          'Authorization': localStorage.getItem('token') ?? ''
+        })
+      })
+      .then(res => res.json())
+      .then((result: Channel[]) => {
+        
+      result.forEach((x: Channel, i: number) => {
+        setChannels(() => {
+            let channels: Channel[] = [];
+            channels.push(result[i]);
           channels.forEach((channel, i) => {
-            if(channel.roles.filter(x => result.members.find(x => x?.id === props.user)?.roles.includes(x.id)).map(x => (x.permissions & 0x0000000040) === 0x0000000040).includes(true)) {
+            if(channel.roles.filter(x => member?.roles.includes(x.id)).map(x => (x.permissions & 0x0000000040) === 0x0000000040).includes(true)) {
               channels[i].ref = createRef();
             } else {
               channels.splice(i, 1);
@@ -30,8 +58,9 @@ function ChannelsList(props: any) {
           });
         });
         }
-      )
-    }, []);
+      );
+      }
+    }, [member]);
 
     useEffect(() => {
       props.ws.addEventListener('message', (event: any) => {
@@ -41,7 +70,7 @@ function ChannelsList(props: any) {
               setChannels(channels => {
                 let newChannels = [...channels];
                 let newChannel = data.channel;
-                if(newChannel.roles.filter((x: any) => guild?.members.find(x => x?.id === props.user)?.roles.includes(x.id)).map((x: any) => (x.permissions & 0x0000000040) === 0x0000000040).includes(true)) {
+                if(newChannel.roles.filter((x: any) => member?.roles.includes(x.id)).map((x: any) => (x.permissions & 0x0000000040) === 0x0000000040).includes(true)) {
                 newChannel.ref = createRef();
                 newChannels.push(newChannel);
                 }

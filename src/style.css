@@ -24,6 +24,260 @@
     height: 100%;
 }
 
+#root.overflowAuto {
+    overflow: auto;
+}
+
+.spinnerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.spinner {
+    border: 15px solid var(--100);
+    border-right: 15px solid var(--300);
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;;
+    animation-name: spin;
+    animation-duration: 500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+.error {
+    font-size: 128px;
+}
+
+.homeMenu {
+    background: var(--100);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.homeLogo {
+    width: 50px;
+    height: auto;
+    display: block;
+    float: left;
+}
+
+.homeMenu > h2 {
+    margin-left: 10px;
+}
+
+.homeMenuLink {
+    color: black;
+    text-decoration: none;
+    position: absolute;
+    right: 25px;
+}
+
+.homeMenuLink > h2 {
+    cursor: pointer;
+}
+
+.homeMenuLink:hover {
+    color: dimgray;
+}
+
+.homeContent {
+    text-align: center;
+    flex-direction: column;
+    padding: 25px;
+}
+
+.homeImportantDescription {
+    margin-bottom: 25px;
+}
+
+.homeDescription {
+    font-weight: normal;
+}
+
+.homeFeature {
+    height: 200px;
+    background: var(--100);
+    margin-top: 25px;
+    border-radius: 10px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.homeFeatureIcon {
+    font-size: 100px;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.homeThemeContainer {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.homeTheme {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    margin-right: 5px;
+    border: none;
+}
+
+.homeThemeRed {
+    background: #F44336;
+}
+
+.homeThemePink {
+    background: #E91E63;
+}
+
+.homeThemePurple {
+    background: #9C27B0;
+}
+
+.homeThemeDeepPurple {
+    background: #673AB7;
+}
+
+.homeThemeIndigo {
+    background: #3F51B5;
+}
+
+.homeThemeBlue {
+    background: #2196F3;
+}
+
+.homeThemeLightBlue {
+    background: #03A9F4;
+}
+
+.homeThemeCyan {
+    background: #00BCD4;
+}
+
+.homeThemeTeal {
+    background: #009688;
+}
+
+.homeThemeGreen {
+    background: #4CAF50;
+}
+
+.homeThemeLightGreen {
+    background: #8BC34A;
+}
+
+.homeThemeLime {
+    background: #CDDC39;
+}
+
+.homeThemeYellow {
+    background: #FFEB3B;
+}
+
+.homeThemeAmber {
+    background: #FFC107;
+}
+
+.homeThemeOrange {
+    background: #FF9800;
+}
+
+.homeThemeDeepOrange {
+    background: #FF5722;
+}
+
+.homeThemeBrown {
+    background: #795548;
+}
+
+.homeThemeGrey {
+    background: #9E9E9E;
+}
+
+.homeThemeBlueGrey {
+    background: #607D8B;
+}
+
+.homeTheme:disabled > span {
+    position: relative;
+}
+
+.homeTheme:disabled > span:after {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    color: white;
+    font-family: FluentSystemIcons-Regular;
+    font-size: 24px;
+    content: '\f296';
+}
+
+.loginScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.loginInput {
+    padding: 10px;
+    border: 2px solid black;
+    margin-bottom: 5px;
+    display: block;
+    width: 50%;
+}
+
+.loginButton {
+    border: none;
+    background: var(--300);
+    color: white;
+    padding: 10px 25px;
+    margin-top: 10px;
+}
+
+.loginButton:hover {
+    background: var(--200);
+}
+
+.loginButton:disabled {
+    background: var(--200);
+}
+
+.loginError {
+    visibility: hidden;
+    color: red;
+    margin-top: 10px;
+}
+
+.joinGuildMembers {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.joinGuildImage {
+    background: white;
+    color: black;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    border: 1px solid #0000001a;
+    margin: auto;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .guildsList {
     width: 80px;
     height: 100%;
@@ -93,6 +347,20 @@
     margin-bottom: 25px;
 }
 
+.guildsListTooltip {
+    background: white;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    left: 70px;
+    display: none;
+    z-index: 1;
+}
+
+.guildsListTooltipShow {
+    display: block;
+}
+
 .fluentIcon {
     font-family: 'FluentSystemIcons-Filled';
 }
@@ -140,6 +408,14 @@
     display: flex;
     align-items: center;
     position: relative;
+}
+
+.guildInfoName {
+    width: calc(100% - 20px);
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .guildInfoArrow {
@@ -198,7 +474,7 @@
 }
 
 .channel:disabled {
-    background: var(--100);
+    background: var(--200);
     color: black;
 }
 
@@ -353,7 +629,7 @@
     border-top: 1px solid #0000001a;
     width: 199px;
     height: 35px;   
-    left: 80px;
+    left: 80px; 
     bottom: 0;
     display: flex;
     align-items: center;
@@ -439,7 +715,7 @@
 }
 
 .pinMessageContainer:hover {
-    background: white;
+    background: var(--50);
 }
 
 .pinMessageContainer:first-child {
@@ -570,4 +846,13 @@
 
 .react-contextmenu-item:hover {
     background: var(--50);
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
 }

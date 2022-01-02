@@ -10,7 +10,7 @@ function CreateChannel(props: any) {
    }}>
       <button className="unbuttoned simpleDialogClose" onClick={() => props.setCreateChannel(false)}>X</button>
       <h2>Create channel</h2>
-      <input type="text" className="simpleDialogInput" value={channelName} onChange={event => setChannelName(event.target.value)}></input>
+      <input type="text" className="simpleDialogInput" value={channelName} maxLength={30} onChange={event => setChannelName(event.target.value)}></input>
       <button className="simpleDialogButton" onClick={() => {
          fetch(props.domain + '/guilds/' + props.guild + '/channels', {
             method: 'POST',

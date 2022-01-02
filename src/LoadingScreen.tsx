@@ -1,5 +1,7 @@
 function LoadingScreen() {
-   return null;
+   return (<div className="spinnerContainer">
+      <div className="spinner"></div>
+   </div>);
 }
 
 export default LoadingScreen;

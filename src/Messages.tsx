@@ -3,12 +3,13 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import moment from "moment";
 import Picker from 'emoji-picker-react';
 import ChannelInfo from './ChannelInfo';
-import { Guild, Channel, Message } from './interfaces';
+import { Guild, Channel, Message, Member } from './interfaces';
 
 function Messages(props: any) {
   const [rerenderValue, rerender] = useState(false);
   const [guild, setGuild] = useState<Guild>();
   const [channel, setChannel] = useState<Channel>();
+  const [member, setMember] = useState<Member>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [selected, setSelected] = useState('');
   const [pins, setPins] = useState<Message[]>([]);
@@ -126,6 +127,21 @@ function Messages(props: any) {
   }, [props.channel]);
 
   useEffect(() => {
+    if(guild) {
+    fetch(props.domain + '/guilds/' + props.guild + '/members/@me', {
+      headers: new Headers({
+        'Authorization': localStorage.getItem('token') ?? ''
+      })
+    })
+    .then(res => res.json())
+    .then((result: Member) => {
+      setMember(result);
+    }
+    );
+  }
+  }, [guild]);
+
+  useEffect(() => {
     if(scroll.current) {
     scroll.current.scrollTop = Number.MAX_SAFE_INTEGER;
     }
@@ -151,7 +167,14 @@ function Messages(props: any) {
                   message.ref.message.current.style.height = message.ref.message.current.scrollHeight + 'px';
                   message.ref.boxIconContainer.current.style.height = message.ref.message.current.scrollHeight + 'px';
                 }
-              }}>{message.content}</h5>
+              }} onKeyDown={(event) => {
+                if(event.key === 'Escape') {
+                   message.ref.message.current.innerText = message.content;
+                   message.ref.message.current.contentEditable = false;
+                    message.ref.boxIconContainer.current.style.display = 'none';
+                    rerender(!rerenderValue);
+                }
+             }}>{message.content}</h5>
               <div className="boxIconContainer boxIconContainerEdit" ref={message.ref.boxIconContainer}>
                 <button className="fluentIconBorder boxIcon" onClick={() => {
                   if(showEmojiPicker !== message.id) {
@@ -201,7 +224,7 @@ function Messages(props: any) {
               <h3 className="fluentIconBorder react-contextmenu-item-icon">&#xf3de;</h3>
             <h3 className="react-contextmenu-item-text">Edit message</h3>
             </MenuItem> : null}
-            {guild?.members.find(x => x?.id === props.user)?.roles.map(role => ((channel?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000100) === 0x0000000100).includes(true) ? <MenuItem onClick={() => {
+            {member?.roles.map(role => ((channel?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000100) === 0x0000000100).includes(true) ? <MenuItem onClick={() => {
               if(!pins?.find(x => x.id === message.id)) {
               fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel + '/pins/' + message.id, {
                 method: 'POST',
@@ -221,7 +244,7 @@ function Messages(props: any) {
               {!pins?.find(x => x.id === message.id) ? <h3 className="fluentIconBorder react-contextmenu-item-icon">&#xf602;</h3> : <h3 className="fluentIconBorder react-contextmenu-item-icon">&#xf604;</h3>}
             <h3 className="react-contextmenu-item-text">{!pins?.find(x => x.id === message.id) ? 'P' : 'Unp'}in message</h3>
             </MenuItem> : null}
-            {props.user === message.author.id || guild?.members.find(x => x?.id === props.user)?.roles.map(role => ((channel?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000100) === 0x0000000100).includes(true) ? <MenuItem onClick={() => {
+            {props.user === message.author.id || member?.roles.map(role => ((channel?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000100) === 0x0000000100).includes(true) ? <MenuItem onClick={() => {
               fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel + '/messages/' + message.id, {
                 method: 'DELETE',
                 headers: new Headers({

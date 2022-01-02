@@ -63,7 +63,7 @@ function CreateInvite(props: any) {
                 'Authorization': localStorage.getItem('token') ?? ''
             })
           }).then(res => res.json()).then(result => {
-            setInviteCode(window.location.protocol + '//' + window.location.host + '/invite/' + result.code);
+            setInviteCode(window.location.protocol + '//' + window.location.host + '/invites/' + result.code);
           });
       }}>Create invite</button>
    </div>);

@@ -81,10 +81,7 @@ export interface Guild {
     name: string,
     description?: string,
     public: boolean,
-    channels: Channel[],
     roles: Role[],
-    members: Member[],
-    bans: string[];
-    invites: Invite[];
+    members: number,
     ref: any;
 };

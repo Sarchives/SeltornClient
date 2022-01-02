@@ -2,7 +2,7 @@ import { createRef, useEffect, useState } from "react";
 import CreateInvite from "./CreateInvite";
 import CreateChannel from "./CreateChannel";
 import EditNickname from "./EditNickname";
-import { Guild } from './interfaces';
+import { Guild, Member } from './interfaces';
 
 function GuildInfo(props: any) {
 
@@ -11,7 +11,7 @@ function GuildInfo(props: any) {
    const createChannelRef = createRef<HTMLDivElement>();
    const editNicknameRef = createRef<HTMLDivElement>();
 
-   const [guildName, setGuildName] = useState('');
+   const [guild, setGuild] = useState<Guild>();
    const [isOwner, setIsOwner] = useState(true);
    const [canInvite, setCanInvite] = useState(false);
    const [canAddChannel, setCanAddChannel] = useState(false);
@@ -31,15 +31,30 @@ function GuildInfo(props: any) {
       })
       .then(res => res.json())
       .then((result: Guild) => {
-       setGuildName(result.name);
-       setIsOwner(result.members.find(x => x?.id === props.user)?.roles.includes("0") ?? false);
-       setCanInvite(result.members.find(x => x?.id === props.user)?.roles.map(role => ((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000001) === 0x0000000001).includes(true) ?? false)
-       setCanAddChannel(result.members.find(x => x?.id === props.user)?.roles.map(role => ((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000008) === 0x0000000008).includes(true) ?? false)  
-       setCanChangeNickname(result.members.find(x => x?.id === props.user)?.roles.map(role => ((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000200) === 0x0000000200).includes(true) ?? false)
-         setCanManage(result.members.find(x => x?.id === props.user)?.roles.map(role => (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000004) === 0x0000000004) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000010) === 0x0000000010) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000020) === 0x0000000020) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000800) === 0x0000000800)).includes(true) ?? false)
+       setGuild(result);
       }
-      )
-    }, []);
+      );
+    }, [props.guild]);
+
+    useEffect(() => {
+       if(guild) {
+      fetch(props.domain + '/guilds/' + props.guild + '/members/@me', {
+         headers: new Headers({
+           'Authorization': localStorage.getItem('token') ?? ''
+         })
+       })
+       .then(res => res.json())
+       .then((result: Member) => {
+         setIsOwner(result.roles.includes("0") ?? false);
+         setCanInvite(result.roles.map(role => ((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000001) === 0x0000000001).includes(true) ?? false)
+         setCanAddChannel(result.roles.map(role => ((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000008) === 0x0000000008).includes(true) ?? false)  
+         setCanChangeNickname(result.roles.map(role => ((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000200) === 0x0000000200).includes(true) ?? false)
+           setCanManage(result.roles.map(role => (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000004) === 0x0000000004) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000010) === 0x0000000010) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000020) === 0x0000000020) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000800) === 0x0000000800)).includes(true) ?? false)
+       }
+       );
+       }
+    }, [guild]);
+
 
     useEffect(() => {
       props.setModalOpened(createInvite || createChannel || editNickname);
@@ -119,7 +134,7 @@ function useOutsideAlerter4(ref: React.RefObject<HTMLDivElement>) {
    {createChannel ? <div ref={createChannelRef}><CreateChannel domain={props.domain} guild={props.guild} setCreateChannel={setCreateChannel}></CreateChannel></div> : null}
    {editNickname ? <div ref={editNicknameRef}><EditNickname domain={props.domain} guild={props.guild} setEditNickname={setEditNickname}></EditNickname></div> : null}
    <div className="guildInfoContainer">
-   <button className="unbuttoned guildInfo" onClick={() => {
+   <button title={guild?.name} className="unbuttoned guildInfo" onClick={() => {
          if(!showInfo && notOnWait) {
           setShowInfo(true); 
          } else if(!notOnWait) {
@@ -130,7 +145,7 @@ function useOutsideAlerter4(ref: React.RefObject<HTMLDivElement>) {
             setShowInfo(false);
          }
       }}>
-         <h4>{guildName}</h4>
+         <h4 className="guildInfoName">{guild?.name}</h4>
          <span className="fluentIcon guildInfoArrow">&#xf262;</span>
       </button>
       {showInfo ? (<div ref={infoRef} className="guildMenu">
@@ -162,7 +177,7 @@ function useOutsideAlerter4(ref: React.RefObject<HTMLDivElement>) {
       {!isOwner ? (<button className="guildMenuButton">
       <h3 className="fluentIconBorder guildMenuButtonIcon">&#xfffc;</h3>
          <h3 className="guildMenuButtonText" onClick={() => {
-         fetch(props.domain + '/users/@me/guilds/' + props.guild, {
+         fetch(props.domain + '/guilds/' + props.guild + '/members/@me', {
             method: 'DELETE',
             headers: new Headers({
                 'Authorization': localStorage.getItem('token') ?? '  '

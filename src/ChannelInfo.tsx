@@ -1,12 +1,13 @@
 import { useEffect, useState, createRef } from "react";
 import moment from "moment";
-import { Guild, Channel, Message } from './interfaces';
+import { Guild, Channel, Message, Member } from './interfaces';
 
 function ChannelInfo(props: any) {
 
   const pinsRef = createRef<HTMLDivElement>();
 
     const [canManage, setCanManage] = useState(false);
+    const [guild, setGuild] = useState<Guild>();
     const [channel, setChannel] = useState<Channel>();
     const [pins, setPins] = useState<Message[]>([]);
     const [showPins, setShowPins] = useState(false);
@@ -36,42 +37,52 @@ function ChannelInfo(props: any) {
     });
   }, [props.ws]);
 
-    useEffect(() => {
-      fetch(props.domain + '/guilds/' + props.guild, {
-        headers: new Headers({
-          'Authorization': localStorage.getItem('token') ?? ''
-        })
+  useEffect(() => {
+    fetch(props.domain + '/guilds/' + props.guild, {
+      headers: new Headers({
+        'Authorization': localStorage.getItem('token') ?? ''
       })
-      .then(res => res.json())
-      .then((result: Guild) => {
-        setCanManage(result.members.find(x => x?.id === props.user)?.roles.map(role => (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000004) === 0x0000000004) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000010) === 0x0000000010) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000020) === 0x0000000020) || (((result.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000800) === 0x0000000800)).includes(true) ?? false)
-      }
-      )
-    }, []);
+    })
+    .then(res => res.json())
+    .then(result => {
+        setGuild(result);
+      });
 
-    useEffect(() => {
-        fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel, {
-            headers: new Headers({
-              'Authorization': localStorage.getItem('token') ?? ''
-            })
-          })
-          .then(res => res.json())
-          .then(result => {
-              setChannel(result);
-            })
-    }, []);
-
-    useEffect(() => {
-      fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel + '/pins', {
+      fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel, {
           headers: new Headers({
             'Authorization': localStorage.getItem('token') ?? ''
           })
         })
         .then(res => res.json())
         .then(result => {
-            setPins(result);
+            setChannel(result);
+          });
+
+          fetch(props.domain + '/guilds/' + props.guild + '/channels/' + props.channel + '/pins', {
+            headers: new Headers({
+              'Authorization': localStorage.getItem('token') ?? ''
+            })
           })
+          .then(res => res.json())
+          .then(result => {
+              setPins(result);
+            });
   }, []);
+
+    useEffect(() => {
+      if(guild) {
+      fetch(props.domain + '/guilds/' + props.guild + '/members/@me', {
+        headers: new Headers({
+          'Authorization': localStorage.getItem('token') ?? ''
+        })
+      })
+      .then(res => res.json())
+      .then((result: Member) => {
+        setCanManage(result.roles.map(role => (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000004) === 0x0000000004) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000010) === 0x0000000010) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000020) === 0x0000000020) || (((guild?.roles.find(x => x?.id === role)?.permissions ?? 0) & 0x0000000800) === 0x0000000800)).includes(true) ?? false)
+      }
+      );
+    }
+    }, [guild]);
 
     useOutsideAlerter(pinsRef);
 
@@ -107,7 +118,7 @@ function ChannelInfo(props: any) {
       }}>&#xf60b;</button>
       {showPins ? <div ref={pinsRef} className="pinsBox">
       {pins.map(message =>
-        message && (<>
+        message && (<div key={message.id}>
           <div className="messageContainer pinMessageContainer">
             <img src={props.domain + '/icons/users/' + message.author.id + '.png'} alt={message.author.username} className="messagePfp"></img>
             <div className="messagePostPfp">
@@ -126,7 +137,7 @@ function ChannelInfo(props: any) {
               <h5 className="message">{message.content}</h5>
             </div>
             </div>
-        </>))}
+        </div>))}
       </div> : null}
        {canManage ? <button className="unbuttoned fluentIcon channelInfoButton">&#xf6b4;</button> : null}
        </div>
